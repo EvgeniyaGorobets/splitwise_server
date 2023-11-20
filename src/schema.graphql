@@ -1,0 +1,55 @@
+scalar Timestamp
+
+type Query {
+  user(id: ID!): User
+  accountingJournal(user: ID!, friend: ID!): AccountingJournal!
+}
+
+type Mutation {
+  createUser(username: String!): User!
+  deleteUser(id: ID!): User!
+  addTransaction(input: TransactionInput): Transaction!
+  updateTransaction(input: TransactionInput): Transaction!
+  deleteTransaction(id: ID!): Transaction!
+}
+
+type User {
+  id: ID!
+  username: String!
+  friends: [User!]!
+  transactions: [Transaction!]!
+}
+
+type Transaction {
+  id: ID!
+  user: User!
+  amount: Int!
+  timestamp: Timestamp!
+  vendor: String!
+  description: String
+  split_with: User!
+}
+
+input TransactionInput {
+  user_id: ID!
+  amount: Int!
+  timestamp: Timestamp!,
+  vendor: String!
+  description: String
+  split_with: ID!
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+type JournalEntry {
+  type: TransactionType
+  transaction: Transaction,
+  balance: Int!,
+}
+
+type AccountingJournal {
+  entries: [JournalEntry!]!
+}
